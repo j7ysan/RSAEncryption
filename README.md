@@ -1,5 +1,6 @@
 ## GROUP 10 for COMP-490-AB1 - Network Security & Cryptography
 
+---------------------------------------------------------
 ## Project Members:
 Jasan Brar (1), Mihir Badhan (2), Yuvraj Singh (3).
 
