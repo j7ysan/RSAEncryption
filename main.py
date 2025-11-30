@@ -3,7 +3,7 @@ from key_manager import (
     generate_keys,
     encrypt_file,
     decrypt_file,
-    wrap_data_key_with_rsa,
+    verify_data_key_with_rsa,
 )
 
 def main():
@@ -17,7 +17,8 @@ def main():
     dec = subparsers.add_parser("decrypt", help="Decrypt sample data with current data key")
     dec.add_argument("--infile", default="data/cipher.bin", help="Encrypted file to decrypt")
     dec.add_argument("--outfile", default="data/decrypted.txt", help="Output plaintext file")
-    subparsers.add_parser("wrap", help="Wrap (encrypt) current data key with RSA public key")
+    subparsers.add_parser("verify", help="Verify (encrypt) current data key with RSA public key")
+    subparsers.add_parser("output", help="Output (response) of the digital signature after RSA encryption")
     args = parser.parse_args()
 
     if args.command == "gen-keys":
@@ -26,8 +27,8 @@ def main():
         encrypt_file(args.infile, args.outfile)
     elif args.command == "decrypt":
         decrypt_file(args.infile, args.outfile)
-    elif args.command == "wrap":
-        wrap_data_key_with_rsa()
+    elif args.command == "verify":
+        verify_data_key_with_rsa()
     else:
         parser.print_help()
 

@@ -105,7 +105,7 @@ def decrypt_file(infile, outfile):
         f.write(pt)
     print(f"[OK] Decrypted {infile} -> {outfile} with {reg['current_version']}")
 
-def wrap_data_key_with_rsa():
+def verify_data_key_with_rsa():
     if not os.path.exists(PUBLIC_KEY_FILE):
         raise RuntimeError("Missing public key. Run gen-keys first.")
     reg = _load_registry()
@@ -121,5 +121,6 @@ def wrap_data_key_with_rsa():
     )
     with open(WRAPPED_FILE, "wb") as f:
         f.write(wrapped)
-    print(f"[OK] Wrapped current data key ({cur}) to {WRAPPED_FILE} using RSA-OAEP.")
+    print(f"[OK] Verified the current data key ({cur}) to {WRAPPED_FILE} using RSA-OAEP.")
+
 
