@@ -12,13 +12,13 @@ Based off the use of RSA encryption hand-in-hand with digital signatures, such a
 ## Program Usage:
 To use the program you must run the basic commands in respect to the project folder such as:
 
-**python TextEncryption/main.py gen-keys,**
+**python TextEncryption/main.py gen-keys**
 
-**python TextEncryption/main.py encrypt,**
+**python TextEncryption/main.py encrypt**
 
-**python TextEncryption/main.py decrypt,**
+**python TextEncryption/main.py decrypt**
 
-**python TextEncryption/main.py verify,**
+**python TextEncryption/main.py verify**
 
 **python TextEncryption/main.py output**
 
@@ -26,23 +26,19 @@ To use the program you must run the basic commands in respect to the project fol
 ## Command Explanation:
 **python TextEncryption/main.py gen-keys:**
 - Used to generate the keys for RSA encryption.
-
-
+<br>
 **python TextEncryption/main.py encrypt:**
 - Used to encrypt the keys generated.
 - Takes in userinput for the signature and text message associated, limited by code.
 - Stashes text under 'data' - plain.
-
-
+<br>
 **python TextEncryption/main.py decrypt:**
 - Used to decrypt the keys generated.
 - Stashes decrypted text under 'data' - decrypted.
-
-
+<br>
 **python TextEncryption/main.py verify:**
 - Used to verify the keys signature after encryption/decryption.
-
-
+<br>
 **python TextEncryption/main.py output:**
 - Used to output the signature and text message associated.
 
