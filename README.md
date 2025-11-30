@@ -43,6 +43,6 @@ To use the program you must run the basic commands in respect to the project fol
 - Used to output the signature and text message associated.
 
 ---------------------------------------------------------
-## Implementation
-Using RSA encryption to encrypt keys and then recognizing a message from a user that should match an initial format, 'First Name', 'Last Name', restricted to 32 characters maximum each, and then encrypt such and then decrypt such to ensure that it was properly done.
+## Project Implementation:
+Using RSA encryption to encrypt keys and then recognizing a message from a user that should match an initial format, 'First Name', 'Last Name', restricted to 32 characters maximum each, and then encrypt such and then decrypt such to ensure that it was properly done. 
 
