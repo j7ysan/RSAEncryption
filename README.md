@@ -10,5 +10,5 @@ Based off the use of RSA encryption hand-in-hand with digital signatures, such a
 
 ---------------------------------------------------------
 ## Project Implementation:
-Using RSA encryption to 1. generate RSA keys necessary for RSA encryption, then 2. add a user's unique digital signature/message for RSA encryption, then 3. validate and authenticate the user's unique digital signature/message, and 4. output a successful response.
+Using RSA encryption to 1. generate RSA keys necessary for RSA encryption, then 2. add a user's unique digital signature/message for RSA encryption, then 3. validate and authenticate the user's unique digital signature/message, and 4. output a successful response. Additional options include the ability to exit or return from exiting.
 
