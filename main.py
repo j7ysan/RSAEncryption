@@ -18,24 +18,30 @@ PUBLIC_KEY_FILE = "public_key.pem"
 
 # The function which will act to generate both the public and private key
 def generate_keys():
-    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    public_key = private_key.public_key()
+    global public_key, private_key
 
-    with open(PRIVATE_KEY_FILE, "wb") as f:
-        f.write(
-            private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=serialization.NoEncryption(),
-            )
-        )
-    with open(PUBLIC_KEY_FILE, "wb") as f:
-        f.write(
-            public_key.public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo,
-            )
-        )
+    # Detecting the choice of the user for key generation
+    chosen = input("Would you like to generate the RSA keys?: ")
+
+    # If the user has chosen a variation of "yes" they will be forwarded here
+    if chosen == "yes" and "Yes":
+        # Printing the RSA keys
+        # Printing the successful generation segment
+        print("\nYou have chosen yes:")
+        print("Generating RSA keys..")
+        private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        public_key = private_key.public_key()
+        print("Key generation was successful.")
+    # If the user has chosen a variation of "no" they will be forwarded here
+    elif chosen == "no" and "No":
+        # Returning the user back to the menu
+        # Printing the unsucessful generation segment
+        print("\nYou have chosen no:")
+        print("Key generation was unsuccessful..")
+        print("Returning back to main menu.")
+        print("\n")
+        print("------------------------------------------------")
+        main()
 
 
 # The function which will add the digital signature
@@ -75,6 +81,7 @@ def exit_menu():
 # Considering our project revolves around RSA encryption in the form of a menu, we'll use each step that we proposed as a menu segment
 # If the user decides each function should correlate to each part of the menu
 def main():
+        # Printing the main menu output
         print("<MAIN MENU>")
         print("------------------------------------------------")
         # This part of the menu correlates to the key creation 
@@ -92,19 +99,19 @@ def main():
 
         # If the first is chosen then: generate the RSA key pair
         if chosen == "1" and "1.":
-                print("\nNow generating keys..")
+                print("\nForwarding to key generation...")
                 generate_keys()
         # If the second is chosen then: add the user's unique message/signature
         elif chosen == "2" and "2.":
-                print("\nNow adding your digital signature..")
+                print("\nNow adding your digital signature...")
                 add_signature()
         # If the third is chosen then: secure the user's unique message/signature
         elif chosen == "3" and "3.":
-                print("\nNow securing your digital signature..")
+                print("\nNow securing your digital signature...")
                 secure_signature()
         # If the fourth is chosen then 
         elif chosen == "4" and "4.":
-                print("\nForwarding to main menu exit..")
+                print("\nForwarding to main menu exit...")
                 exit_menu()
         else:
             # If none of the options, not even the exit worked, print this.
