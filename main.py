@@ -27,13 +27,12 @@ def generate_keys():
         print("\nYou have chosen yes:")
         print("Generating RSA keys..")
 
-        # Here we are generating both public and private key, serializing the public and private keys, and writing both the public and private keys as 'PEM' files
+        # Here we are generating both keys, serializing both keys, and writing both keys as PEM
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-        # In this step we want to ensure that the public_key must be generated after the private_key in order, otherwise it will not generate
         public_key = private_key.public_key()
      
-        public_key_pem = public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo).decode('utf-8')
-        private_key_pem = private_key.private_bytes(encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL, encryption_algorithm=serialization.NoEncryption()).decode('utf-8')
+        public_key_pem = public_key.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo).decode("utf-8")
+        private_key_pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,format=serialization.PrivateFormat.TraditionalOpenSSL,encryption_algorithm=serialization.NoEncryption()).decode("utf-8")
 
         with open("public_key.pem", "w") as public_key_file:
              public_key_file.write(public_key_pem)
@@ -45,7 +44,6 @@ def generate_keys():
         print("Key generation was successful.")
         print("\n")
         print("------------------------------------------------")
-        # Now sending the user back to the main menu with the public and private key
         main()
         return public_key, private_key 
     
@@ -66,22 +64,17 @@ def generate_keys():
 def add_signature():
     signature = input("Add your digital signature here: ")
     # Shifting the unique message into an encrypted version
-    signature_in_bytes = signature.encode('utf-8')
+    bytes_signature = signature.encode("utf-8")
 
     # Adding the encryption step onto the digital signature
-    encrypted_signature = public_key.encrypt(signature_in_bytes, padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None))
-    
-    # Test case to showcase signature and encrypted signature
-    print("\nPrinting your original signature..")
-    # Printing the plaintext signature
-    print(signature)
-    print("\nPrinting the encrypted version of your signature below..")
-    # Printing the encrypted signature
-    print(encrypted_signature)
+    hidden_signature = public_key.encrypt(bytes_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+        
+    # Print the successful signature addition
+    print("Signature addition was successful.")
     print("\n")
     print("------------------------------------------------")
-    # Now sending the user back to the main menu with the public and private key
     main()
+    return hidden_signature
 
 # The function which will secure the digital signature
 # The digital signature will be secured from the 
@@ -92,8 +85,16 @@ def secure_signature():
 # The function which will decrypt the digital signature
 # The digital signature will be decrypted from the
 def output_signature():
-    print("Your signature will now be shown below: ")
+    # Obtaining our message from PEM
+    with open("private_key.pem", "r") as private_key_file:
+        read_private_key = serialization.load_pem_private_key(private_key_file.read().encode("utf-8"),password=None)
 
+    # Decrypting our signature/unique message
+    shown_signature = read_private_key.decrypt(hidden_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None).decode("utf-8"))
+
+    # Printing the unique message/result                            
+    print("Your signature will now be shown below: ")
+    print(shown_signature)
 
 # A simple exit from the main menu that we have created
 def exit_menu():
@@ -103,12 +104,12 @@ def exit_menu():
     # If the user has chosen a variation of "yes" they will be forwarded here
     if chosen == "yes" and "Yes":
         time.sleep(2)
-        print("\nYou have chosen yes:")
+        print("\n")
         print("Main menu closed.")
         exit()
     # Else if the user has chosen a variation of "no" then they will be forwarded here
     elif chosen == "no" and "No":
-        print("\nYou have chosen no:")
+        print("\n")
         print("Returning back to main menu.")
         print("\n")
         print("------------------------------------------------")
@@ -134,33 +135,32 @@ def main():
         print("5. To exit the main menu")
         print("------------------------------------------------")
 
-        chosen_input = input("\nChoose a command option from the above menu: ")
+        mainmenu_option = input("\nChoose a command option from the above menu: ")
 
-        # If the first is chosen then: generate the RSA key pair
-        if chosen_input == "1" and "1.":
+        # If the first is chosen then: genereate keys
+        if mainmenu_option == "1" and "1.":
                 print("\nForwarding to key generation...")
                 generate_keys()
         # If the second is chosen then: add and encrypt the user's unique message/signature
-        elif chosen_input == "2" and "2.":
+        elif mainmenu_option == "2" and "2.":
                 print("\nNow adding your digital signature...")
                 add_signature()
         # If the third is chosen then: secure the user's unique message/signature
-        elif chosen_input == "3" and "3.":
+        elif mainmenu_option == "3" and "3.":
                 print("\nNow securing your digital signature...")
                 secure_signature()
         # If the fourth  is chosen then: output and decrypt the user's unique message/signature
-        elif chosen_input == "4" and "4.":
+        elif mainmenu_option == "4" and "4.":
                 print("\nNow outputting your digital signature...")
                 output_signature()
         # If the fifth is chosen then 
-        elif chosen_input == "5" and "5.":
+        elif mainmenu_option == "5" and "5.":
                 print("\nForwarding to main menu exit...")
                 exit_menu()
         else:
             # If none of the options, not even the exit worked, print this.
-            print(f"\nAn error has occured: Incorrect choice selection.")
+            print(f"\nAn error has occurred: Incorrect choice selection.")
 
 
 # Our basic function usage under one singular file
-if __name__ == "__main__":
-    main()
+main()
