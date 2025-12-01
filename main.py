@@ -76,6 +76,7 @@ def add_signature():
     main()
     return hidden_signature
 
+
 # The function which will secure the digital signature
 # The digital signature will be secured from the 
 def secure_signature():
