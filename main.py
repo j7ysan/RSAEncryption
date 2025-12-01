@@ -4,16 +4,10 @@ import os
 import base64
 # Standard library for wait/sleep
 import time
-# Standard libraries used for RSA encryption services
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives import serialization, hashes
-from cryptography.fernet import Fernet
-
-
-# An output that will print our private key, PEM encoded
-PRIVATE_KEY_FILE = "private_key.pem"
-# An output that will print our public key, PEM encoded
-PUBLIC_KEY_FILE = "public_key.pem"
+# Standard cryptography library used for RSA encryption services
+from cryptography.hazmat.primitives.asymmetric import rsa
+# Standard cryptography library used for serialization
+from cryptography.hazmat.primitives import serialization
 
 
 # The function which will act to generate both the public and private key
@@ -29,9 +23,25 @@ def generate_keys():
         # Printing the successful generation segment
         print("\nYou have chosen yes:")
         print("Generating RSA keys..")
+
+        # Here we are generating both public and private key
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        # In this step we want to ensure that the public_key must be generated after the private_key in order, otherwise it will not generate
         public_key = private_key.public_key()
+     
+        # Here we are serializing the public and private keys
+        public_key_pem = public_key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo).decode('utf-8')
+        private_key_pem = private_key.private_bytes(encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL, encryption_algorithm=serialization.NoEncryption()).decode('utf-8')
+
+        # Writing both the public and private keys as 'PEM' files
+        with open("public_key.pem", "w") as public_key_file:
+             public_key_file.write(public_key_pem)
+        with open("private_key.pem", "w") as private_key_file:
+             private_key_file.write(private_key_pem)
+
+        # Print the successful key generation and serialization
         print("Key generation was successful.")
+
     # If the user has chosen a variation of "no" they will be forwarded here
     elif chosen == "no" and "No":
         # Returning the user back to the menu
@@ -47,8 +57,9 @@ def generate_keys():
 # The function which will add the digital signature
 # This digital signature will be added to the 
 def add_signature():
+    # Prompting the user to add their unique message
     signature = input("Add your digital signature here:")
-    print(signature)
+    # Shifting the unique message into an encrypted version
 
 
 # The function which will secure the digital signature
