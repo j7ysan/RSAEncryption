@@ -62,6 +62,12 @@ def generate_keys():
         print("\n")
         print("------------------------------------------------")
         main()
+    else: 
+        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print("\nReturning back to main menu.")
+        print("\n")
+        print("------------------------------------------------")
+        main()
 
 
 # The function which will add the digital signature
@@ -128,9 +134,27 @@ def output_signature():
             if chosen_pass == enter_password:
                 print("Your signature will now be shown below: ")
                 print(shown_signature.decode("utf-8"))
-                print("\n")
-                print("------------------------------------------------")
-                main()
+                # Integrity check based off of the signature output, user should already be authorized at this point
+                check_integrity = input("\nIs your signature still as you entered it?: ")
+                if check_integrity == "yes" and "Yes":
+                    print("Signature integrity has remained consistent.")
+                    print("\n")
+                    print("------------------------------------------------")
+                    main()
+                elif check_integrity == "no" and "No":
+                    print("Signature integrity has been compromised.")
+                    time.sleep(2)
+                    print("\n")
+                    print("Force exiting to refresh.....")
+                    time.sleep(0.5)
+                    print("Signature refreshing....")
+                    time.sleep(0.5)
+                    print("Signature refreshed...")
+                    time.sleep(0.5)
+                    print("Session terminated for refresh..")
+                    time.sleep(0.5)
+                    print("Please restart the system.")
+                    exit()
             else:
                 print("Invalid credentials.")
     elif chosen_input == "no" and "No":
@@ -139,6 +163,12 @@ def output_signature():
             print("\n")
             print("------------------------------------------------")
             main()
+    else: 
+        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print("\nReturning back to main menu.")
+        print("\n")
+        print("------------------------------------------------")
+        main()
              
 
 # A simple exit from the main menu that we have created
@@ -156,6 +186,12 @@ def exit_menu():
     elif chosen == "no" and "No":
         print("\n")
         print("Returning back to main menu.")
+        print("\n")
+        print("------------------------------------------------")
+        main()
+    else: 
+        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print("\nReturning back to main menu.")
         print("\n")
         print("------------------------------------------------")
         main()
@@ -206,6 +242,10 @@ def main():
         else:
             # If none of the options, not even the exit worked, print this.
             print(f"\nAn error has occurred: Incorrect choice selection.")
+            print("\nReturning back to main menu.")
+            print("\n")
+            print("------------------------------------------------")
+            main()
 
 
 # Our basic function usage under one singular file
