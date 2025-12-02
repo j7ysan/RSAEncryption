@@ -1,19 +1,21 @@
+# Standard library for converting passwords
+import getpass
 # Standard library for converting data
 import base64
 # Standard library for wait/sleep
 import time
-# Standard cryptography library used for RSA encryption services
-from cryptography.hazmat.primitives.asymmetric import rsa
-# Standard cryptography library used for padding
-from cryptography.hazmat.primitives.asymmetric import padding 
+# Standard cryptography library used for RSA encryption services and padding
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
 # Standard cryptography library used for serialization and hashes
 from cryptography.hazmat.primitives import serialization, hashes
 
 # Making these for asking for secure outputs to validate user response
 global enter_username
 global enter_password 
+
+# User verification/validation, extra step in security and output
 enter_username = input("What would you like your username to be?: ")
-enter_password = input("What would you like your password to be?: ")
+enter_password = getpass.getpass("What would you like your password to be?: ")
 
 # The function which will generate the keys
 def generate_keys():
@@ -63,7 +65,7 @@ def generate_keys():
 
 
 # The function which will add the digital signature
-# This digital signature will be added to the 
+# This digital signature will be added to the data.
 def add_signature():
 
     global hidden_signature
@@ -84,7 +86,7 @@ def add_signature():
 
 
 # The function which will secure the digital signature
-# The digital signature will be secured from the 
+# The digital signature will be secured from the data and encoded through a layer of added security.
 def secure_signature():
 
     global secured_signature
@@ -106,7 +108,7 @@ def secure_signature():
 
 
 # The function which will decrypt the digital signature
-# The digital signature will be decrypted from the
+# The digital signature will be decrypted from the original message, separate from the secured one.
 def output_signature():
     # Obtaining our message from PEM
     with open("TextEncryption/private_key.pem", "r") as private_key_file:
@@ -120,10 +122,10 @@ def output_signature():
 
     # Security check to output the signature, otherwise it will be unauthorized
     if chosen_input == "yes" and "Yes":
-        username_check = input("Enter your username from before: ")
-        password_check = input("Enter your password from before: ")
-        if username_check == enter_username:
-            if password_check == enter_password:
+        chosen_user = input("Enter your username from before: ")
+        chosen_pass = input("Enter your password from before: ")
+        if chosen_user == enter_username:
+            if chosen_pass == enter_password:
                 print("Your signature will now be shown below: ")
                 print(shown_signature.decode("utf-8"))
                 print("\n")
