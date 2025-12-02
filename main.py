@@ -31,6 +31,7 @@ def generate_keys():
     if chosen_input == "yes" and "Yes":
         # Printing the RSA keys
         # Printing the successful generation segment
+        print("\nYou have chosen yes:")
         print("\nGenerating RSA keys..")
 
         # Here we are generating both keys, serializing both keys, and writing both keys as PEM
@@ -57,6 +58,7 @@ def generate_keys():
     elif chosen_input == "no" and "No":
         # Returning the user back to the menu
         # Printing the unsucessful generation segment
+        print("\nYou have chosen no:")
         print("\nKey generation was unsuccessful..")
         print("Returning back to main menu.")
         print("\n")
