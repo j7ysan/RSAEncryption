@@ -62,6 +62,9 @@ def generate_keys():
 # The function which will add the digital signature
 # This digital signature will be added to the 
 def add_signature():
+
+    global hidden_signature
+
     signature = input("Add your digital signature here: ")
     # Shifting the unique message into an encrypted version
     bytes_signature = signature.encode("utf-8")
@@ -91,11 +94,11 @@ def output_signature():
         read_private_key = serialization.load_pem_private_key(private_key_file.read().encode("utf-8"),password=None)
 
     # Decrypting our signature/unique message
-    shown_signature = read_private_key.decrypt(hidden_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None).decode("utf-8"))
+    shown_signature = read_private_key.decrypt(hidden_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
 
     # Printing the unique message/result                            
     print("Your signature will now be shown below: ")
-    print(shown_signature)
+    print(shown_signature.decode("utf-8"))
 
 # A simple exit from the main menu that we have created
 def exit_menu():
