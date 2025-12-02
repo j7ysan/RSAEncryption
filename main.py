@@ -70,7 +70,7 @@ def add_signature():
 
     global hidden_signature
 
-    signature = input("Add your digital signature here: ")
+    signature = getpass.getpass("Add your digital signature here: ")
     # Shifting the unique message into an encrypted version
     bytes_signature = signature.encode("utf-8")
 
