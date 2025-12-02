@@ -16,6 +16,8 @@ global enter_password
 # User verification/validation, extra step in security and output
 enter_username = input("What would you like your username to be?: ")
 enter_password = getpass.getpass("What would you like your password to be?: ")
+print("\nAccount successfully created.")
+print("------------------------------------------------")
 
 # The function which will generate the keys
 def generate_keys():
@@ -29,8 +31,7 @@ def generate_keys():
     if chosen_input == "yes" and "Yes":
         # Printing the RSA keys
         # Printing the successful generation segment
-        print("\nYou have chosen yes:")
-        print("Generating RSA keys..")
+        print("\nGenerating RSA keys..")
 
         # Here we are generating both keys, serializing both keys, and writing both keys as PEM
         private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
@@ -56,8 +57,7 @@ def generate_keys():
     elif chosen_input == "no" and "No":
         # Returning the user back to the menu
         # Printing the unsucessful generation segment
-        print("\nYou have chosen no:")
-        print("Key generation was unsuccessful..")
+        print("\nKey generation was unsuccessful..")
         print("Returning back to main menu.")
         print("\n")
         print("------------------------------------------------")
@@ -128,16 +128,18 @@ def output_signature():
 
     # Security check to output the signature, otherwise it will be unauthorized
     if chosen_input == "yes" and "Yes":
-        chosen_user = input("Enter your username from before: ")
+        chosen_user = input("\nEnter your username from before: ")
         chosen_pass = input("Enter your password from before: ")
         if chosen_user == enter_username:
             if chosen_pass == enter_password:
                 print("Your signature will now be shown below: ")
+                print("\n")
                 print(shown_signature.decode("utf-8"))
                 # Integrity check based off of the signature output, user should already be authorized at this point
                 check_integrity = input("\nIs your signature still as you entered it?: ")
                 if check_integrity == "yes" and "Yes":
-                    print("Signature integrity has remained consistent.")
+                    print("\nSignature integrity has remained consistent.")
+                    print("Authentication check passed.")
                     print("\n")
                     print("------------------------------------------------")
                     main()
