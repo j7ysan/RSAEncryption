@@ -1,5 +1,3 @@
-# Standard library for dealing with the operating system
-import os
 # Standard library for converting data
 import base64
 # Standard library for wait/sleep
@@ -11,6 +9,11 @@ from cryptography.hazmat.primitives.asymmetric import padding
 # Standard cryptography library used for serialization and hashes
 from cryptography.hazmat.primitives import serialization, hashes
 
+# Making these for asking for secure outputs to validate user response
+global enter_username
+global enter_password 
+enter_username = input("What would you like your username to be?: ")
+enter_password = input("What would you like your password to be?: ")
 
 # The function which will generate the keys
 def generate_keys():
@@ -34,10 +37,10 @@ def generate_keys():
         public_key_pem = public_key.public_bytes(encoding=serialization.Encoding.PEM,format=serialization.PublicFormat.SubjectPublicKeyInfo).decode("utf-8")
         private_key_pem = private_key.private_bytes(encoding=serialization.Encoding.PEM,format=serialization.PrivateFormat.TraditionalOpenSSL,encryption_algorithm=serialization.NoEncryption()).decode("utf-8")
 
-        with open("public_key.pem", "w") as public_key_file:
+        with open("TextEncryption/public_key.pem", "w") as public_key_file:
              public_key_file.write(public_key_pem)
 
-        with open("private_key.pem", "w") as private_key_file:
+        with open("TextEncryption/private_key.pem", "w") as private_key_file:
              private_key_file.write(private_key_pem)
 
         # Print the successful key generation and serialization
@@ -83,26 +86,62 @@ def add_signature():
 # The function which will secure the digital signature
 # The digital signature will be secured from the 
 def secure_signature():
-    print("Your signature successfully authenticated!")
+
+    global secured_signature
+
+    # Using base64 to add security to the digital signature
+    secured_signature = base64.urlsafe_b64encode(hidden_signature)
+
+    # Now we save the secure signature for further output later
+    with open("TextEncryption/encoded_signature.txt", "wb") as f:
+         f.write(secured_signature)
+
+    # Outputting to the user a successful secure of the digital signature
+    print("\nYour signature successfully authenticated!")
+    print("It is located in 'secure_signature.txt'.")
+    print("\n")
+    print("------------------------------------------------")
+    main()
+    return secured_signature
 
 
 # The function which will decrypt the digital signature
 # The digital signature will be decrypted from the
 def output_signature():
     # Obtaining our message from PEM
-    with open("private_key.pem", "r") as private_key_file:
+    with open("TextEncryption/private_key.pem", "r") as private_key_file:
         read_private_key = serialization.load_pem_private_key(private_key_file.read().encode("utf-8"),password=None)
 
     # Decrypting our signature/unique message
     shown_signature = read_private_key.decrypt(hidden_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
 
-    # Printing the unique message/result                            
-    print("Your signature will now be shown below: ")
-    print(shown_signature.decode("utf-8"))
+    # Printing the unique message/result   
+    chosen_input = input("Are you sure you will like to see the digital signature?: ")
+
+    # Security check to output the signature, otherwise it will be unauthorized
+    if chosen_input == "yes" and "Yes":
+        username_check = input("Enter your username from before: ")
+        password_check = input("Enter your password from before: ")
+        if username_check == enter_username:
+            if password_check == enter_password:
+                print("Your signature will now be shown below: ")
+                print(shown_signature.decode("utf-8"))
+                print("\n")
+                print("------------------------------------------------")
+                main()
+            else:
+                print("Invalid credentials.")
+    elif chosen_input == "no" and "No":
+            print("\n")
+            print("Returning back to main menu.")
+            print("\n")
+            print("------------------------------------------------")
+            main()
+             
 
 # A simple exit from the main menu that we have created
 def exit_menu():
-    # Detecting the choice of the user for main menu exiting
+
     chosen = input("Are you sure you would like to close the main menu?: ")
 
     # If the user has chosen a variation of "yes" they will be forwarded here
@@ -124,6 +163,7 @@ def exit_menu():
 # Considering our project revolves around RSA encryption in the form of a menu, we'll use each step that we proposed as a menu segment
 # If the user decides each function should correlate to each part of the menu
 def main():
+        
         # Printing the main menu output
         print("<MAIN MENU>")
         print("------------------------------------------------")
@@ -155,7 +195,7 @@ def main():
                 secure_signature()
         # If the fourth  is chosen then: output and decrypt the user's unique message/signature
         elif mainmenu_option == "4" and "4.":
-                print("\nNow outputting your digital signature...")
+                print("\nNow attempting to output your digital signature...")
                 output_signature()
         # If the fifth is chosen then 
         elif mainmenu_option == "5" and "5.":
