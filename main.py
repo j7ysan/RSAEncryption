@@ -63,7 +63,7 @@ def generate_keys():
         print("------------------------------------------------")
         main()
     else: 
-        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print(f"\nAn error has occurred: '{chosen_input}' Incorrect option, this choice requires a yes or no answer.")
         print("\nReturning back to main menu.")
         print("\n")
         print("------------------------------------------------")
@@ -164,7 +164,7 @@ def output_signature():
             print("------------------------------------------------")
             main()
     else: 
-        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print(f"\nAn error has occurred: '{chosen_input}' Incorrect option, this choice requires a yes or no answer.")
         print("\nReturning back to main menu.")
         print("\n")
         print("------------------------------------------------")
@@ -174,23 +174,23 @@ def output_signature():
 # A simple exit from the main menu that we have created
 def exit_menu():
 
-    chosen = input("Are you sure you would like to close the main menu?: ")
+    chosen_input = input("Are you sure you would like to close the main menu?: ")
 
     # If the user has chosen a variation of "yes" they will be forwarded here
-    if chosen == "yes" and "Yes":
+    if chosen_input == "yes" and "Yes":
         time.sleep(2)
         print("\n")
         print("Main menu closed.")
         exit()
     # Else if the user has chosen a variation of "no" then they will be forwarded here
-    elif chosen == "no" and "No":
+    elif chosen_input == "no" and "No":
         print("\n")
         print("Returning back to main menu.")
         print("\n")
         print("------------------------------------------------")
         main()
     else: 
-        print(f"\nAn error has occurred: This choice requires a yes or no answer.")
+        print(f"\nAn error has occurred: '{chosen_input}' Incorrect option, this choice requires a yes or no answer.")
         print("\nReturning back to main menu.")
         print("\n")
         print("------------------------------------------------")
@@ -241,7 +241,7 @@ def main():
                 exit_menu()
         else:
             # If none of the options, not even the exit worked, print this.
-            print(f"\nAn error has occurred: Incorrect choice selection.")
+            print(f"\nAn error has occurred: '{mainmenu_option}' Incorrect option, this choice requires a numbered response 1-5.")
             print("\nReturning back to main menu.")
             print("\n")
             print("------------------------------------------------")
