@@ -28,10 +28,9 @@ def generate_keys():
     chosen_input = input("Would you like to generate the RSA keys?: ")
 
     # If the user has chosen a variation of "yes" they will be forwarded here
-    if chosen_input == "yes" and "Yes":
+    if chosen_input == "yes":
         # Printing the RSA keys
         # Printing the successful generation segment
-        print("\nYou have chosen yes:")
         print("\nGenerating RSA keys..")
 
         # Here we are generating both keys, serializing both keys, and writing both keys as PEM
@@ -55,10 +54,9 @@ def generate_keys():
         return public_key, private_key 
     
     # If the user has chosen a variation of "no" they will be forwarded here
-    elif chosen_input == "no" and "No":
+    elif chosen_input == "no":
         # Returning the user back to the menu
         # Printing the unsucessful generation segment
-        print("\nYou have chosen no:")
         print("\nKey generation was unsuccessful..")
         print("Returning back to main menu.")
         print("\n")
@@ -76,21 +74,24 @@ def generate_keys():
 # This digital signature will be added to the data.
 def add_signature():
 
-    global hidden_signature
+    global hidden_digital_signature
+    global hidden_text_signature
+    global bytes_signature
 
     signature = getpass.getpass("Add your digital signature here: ")
     # Shifting the unique message into an encrypted version
     bytes_signature = signature.encode("utf-8")
 
-    # Adding the encryption step onto the digital signature
-    hidden_signature = public_key.encrypt(bytes_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
-        
+    # Adding the actual signature step onto the digital signature
+    hidden_digital_signature = private_key.sign(bytes_signature,padding.PSS(mgf=padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+    hidden_text_signature = public_key.encrypt(bytes_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+
     # Print the successful signature addition
     print("Signature addition was successful.")
     print("\n")
     print("------------------------------------------------")
     main()
-    return hidden_signature
+    return hidden_digital_signature, hidden_text_signature, bytes_signature
 
 
 # The function which will secure the digital signature
@@ -99,8 +100,7 @@ def secure_signature():
 
     global secured_signature
 
-    # Using base64 to add security to the digital signature
-    secured_signature = base64.urlsafe_b64encode(hidden_signature)
+    secured_signature = base64.urlsafe_b64encode(hidden_digital_signature)
 
     # Now we save the secure signature for further output later
     with open("TextEncryption/encoded_signature.txt", "wb") as f:
@@ -118,34 +118,39 @@ def secure_signature():
 # The function which will decrypt the digital signature
 # The digital signature will be decrypted from the original message, separate from the secured one.
 def output_signature():
-    # Obtaining our message from PEM
+    # Obtaining our message from PEM for both public and private
+    with open("TextEncryption/public_key.pem", "r") as public_key_file:
+        read_public_key = serialization.load_pem_public_key(public_key_file.read().encode("utf-8"))
     with open("TextEncryption/private_key.pem", "r") as private_key_file:
         read_private_key = serialization.load_pem_private_key(private_key_file.read().encode("utf-8"),password=None)
 
     # Decrypting our signature/unique message
-    shown_signature = read_private_key.decrypt(hidden_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+    # Verifying our signature/unique message
+    shown_signature = read_public_key.verify(hidden_digital_signature,bytes_signature,padding.PSS(mgf=padding.MGF1(hashes.SHA256()),salt_length=padding.PSS.MAX_LENGTH),hashes.SHA256())
+    shown_text_signature = read_private_key.decrypt(hidden_text_signature,padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
 
     # Printing the unique message/result   
     chosen_input = input("Are you sure you will like to see the digital signature?: ")
 
     # Security check to output the signature, otherwise it will be unauthorized
-    if chosen_input == "yes" and "Yes":
+    if chosen_input == "yes":
         chosen_user = input("\nEnter your username from before: ")
         chosen_pass = input("Enter your password from before: ")
         if chosen_user == enter_username:
             if chosen_pass == enter_password:
                 print("Your signature will now be shown below: ")
                 print("\n")
-                print(shown_signature.decode("utf-8"))
+                print(shown_text_signature.decode("utf-8"))
                 # Integrity check based off of the signature output, user should already be authorized at this point
                 check_integrity = input("\nIs your signature still as you entered it?: ")
-                if check_integrity == "yes" and "Yes":
-                    print("\nSignature integrity has remained consistent.")
+                if check_integrity == "yes":
+                    print(f"\nNone = verified, Verification level: '{shown_signature}'")
+                    print("Signature integrity has remained consistent.")
                     print("Authentication check passed.")
                     print("\n")
                     print("------------------------------------------------")
                     main()
-                elif check_integrity == "no" and "No":
+                elif check_integrity == "no":
                     print("Signature integrity has been compromised.")
                     time.sleep(2)
                     print("\n")
@@ -161,7 +166,7 @@ def output_signature():
                     exit()
             else:
                 print("Invalid credentials.")
-    elif chosen_input == "no" and "No":
+    elif chosen_input == "no":
             print("\n")
             print("Returning back to main menu.")
             print("\n")
@@ -181,13 +186,13 @@ def exit_menu():
     chosen_input = input("Are you sure you would like to close the main menu?: ")
 
     # If the user has chosen a variation of "yes" they will be forwarded here
-    if chosen_input == "yes" and "Yes":
+    if chosen_input == "yes":
         time.sleep(2)
         print("\n")
         print("Main menu closed.")
         exit()
     # Else if the user has chosen a variation of "no" then they will be forwarded here
-    elif chosen_input == "no" and "No":
+    elif chosen_input == "no":
         print("\n")
         print("Returning back to main menu.")
         print("\n")
@@ -205,8 +210,7 @@ def exit_menu():
 # Considering our project revolves around RSA encryption in the form of a menu, we'll use each step that we proposed as a menu segment
 # If the user decides each function should correlate to each part of the menu
 def main():
-        
-        # Printing the main menu output
+        # Our output in the form of a main menu 
         print("<MAIN MENU>")
         print("------------------------------------------------")
         # This part of the menu correlates to the key creation 
